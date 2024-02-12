@@ -1,8 +1,10 @@
+import com.microsoft.azure.plugin.functions.gradle.task.PackageTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("com.microsoft.azure.azurefunctions") version "1.8.0"
-    // id("org.springframework.boot") version "3.0.1"
+    id("org.springframework.boot") version "3.0.1"
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
 }
@@ -30,7 +32,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
-    implementation("org.springframework.cloud:spring-cloud-function-adapter-azure:3.1.2")
+    implementation("org.springframework.cloud:spring-cloud-function-adapter-azure:4.1.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.4.4")
     compileOnly("org.springframework.cloud:spring-cloud-starter-function-web:3.1.2")
 }
@@ -40,9 +42,15 @@ version = "1.0.0-SNAPSHOT"
 description = "Hello Spring Function on Azure"
 
 tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = "com.example.DemoApplication"
-    }
+    enabled = false
+}
+
+tasks.withType<BootJar> {
+    mainClass = "com.example.DemoApplication"
+}
+
+tasks.withType<PackageTask> {
+    dependsOn("bootJar")
 }
 
 tasks.withType<KotlinCompile> {
